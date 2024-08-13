@@ -2,17 +2,13 @@ import { useEffect, useState } from "react";
 import io from "socket.io-client";
 import axios from "axios";
 
+import AgregarPrestamo from "./prestamos/AgregarPrestamo";
+import PrestamosPorRut from "./prestamos/GetAllByRut";
+
 const socket = io("http://localhost:3000");
 
 export default function Prestamos() {
     const [prestamos, setPrestamos] = useState([]);
-    const [newPrestamo, setNewPrestamo] = useState({
-        rut: "",
-        id_producto: "",
-        nombre_producto: "",
-        timestamp: "",
-        monto: "",
-    });
 
     useEffect(() => {
         axios
@@ -33,32 +29,6 @@ export default function Prestamos() {
             socket.off("prestamosUpdate");
         };
     });
-
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setNewPrestamo((prevPrestamo) => ({
-            ...prevPrestamo,
-            [name]: value,
-        }));
-    };
-
-    const handleAddPrestamo = () => {
-        axios
-        .post("http://localhost:3000/prestamos", newPrestamo)
-        .then((res) => {
-            setNewPrestamo({
-            rut: "",
-            id_producto: "",
-            nombre_producto: "",
-            timestamp: "",
-            monto: "",
-            });
-            console.log(res);
-        })
-        .catch((err) => {
-            console.log(err);
-        });
-    };
 
     return (
         <>
@@ -87,24 +57,8 @@ export default function Prestamos() {
                 </table>
                 </div>
             }
-            <div>
-                <h2>Agregar prestamo</h2>
-                <input
-                    type="text"
-                    placeholder="Rut"
-                    name="rut"
-                    value={newPrestamo.rut}
-                    onChange={handleChange}
-                />
-                <input
-                    type="text"
-                    placeholder="ID Producto"
-                    name="id_producto"
-                    value={newPrestamo.id_producto}
-                    onChange={handleChange}
-                />
-                <button onClick={handleAddPrestamo}>Agregar</button>
-            </div>
+            <AgregarPrestamo />
+            <PrestamosPorRut />
         </>
     )
 }

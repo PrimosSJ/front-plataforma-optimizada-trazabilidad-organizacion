@@ -2,17 +2,13 @@ import { useEffect, useState } from "react";
 import io from "socket.io-client";
 import axios from "axios";
 
+import AgregarItem from "./inventario/AgregarItem";
+import ItemView from "./inventario/ItemView";
+
 const socket = io("http://localhost:3000");
 
 export default function Inventario() {
     const [inventory, setInventory] = useState([]);
-    const [newItem, setNewItem] = useState({
-        nombre: "",
-        descripcion: "",
-        precio: "",
-        categoria: "",
-        stock: "",
-    });
     
     useEffect(() => {
         axios
@@ -33,32 +29,6 @@ export default function Inventario() {
             socket.off("inventoryUpdate");
         };
     });
-    
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setNewItem((prevItem) => ({
-            ...prevItem,
-            [name]: value,
-        }));
-    };
-    
-    const handleAddItem = () => {
-        axios
-        .post("http://localhost:3000/inventario", newItem)
-        .then((res) => {
-            setNewItem({
-            nombre: "",
-            descripcion: "",
-            precio: "",
-            categoria: "",
-            stock: "",
-            });
-            console.log(res);
-        })
-        .catch((err) => {
-            console.log(err);
-        });
-    };
     
     return (
         <>
@@ -86,52 +56,22 @@ export default function Inventario() {
                     <td>{item.precio}</td>
                     <td>{item.categoria}</td>
                     <td>{item.stock}</td>
+                    <td>
+                        <button 
+                            href={`/inventario/${item._id}`}
+                            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                        >
+                            Editar
+                        </button>
+                    </td>
                 </tr>
                 ))}
             </tbody>
             </table>
             </div>
         }
-        <div>
-            <h2>Agregar producto</h2>
-            <input
-            type="text"
-            name="nombre"
-            value={newItem.nombre}
-            onChange={handleChange}
-            placeholder="Nombre"
-            />
-            <input
-            type="text"
-            name="descripcion"
-            value={newItem.descripcion}
-            onChange={handleChange}
-            placeholder="Descripción"
-            />
-            <input
-            type="number"
-            name="precio"
-            value={newItem.precio}
-            onChange={handleChange}
-            placeholder="Precio"
-            />
-            <input
-            type="text"
-            name="categoria"
-            value={newItem.categoria}
-            onChange={handleChange}
-            placeholder="Categoría"
-            />
-            <input
-            type="number"
-            name="stock"
-            value={newItem.stock}
-            onChange={handleChange}
-            placeholder="Stock"
-            />
-            <button onClick={handleAddItem}>Agregar producto</button>
 
-        </div>
+        <AgregarItem />
         </>
     )
 }

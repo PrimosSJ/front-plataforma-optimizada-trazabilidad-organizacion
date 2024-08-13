@@ -44,7 +44,7 @@ export default function PrestamosPorRut() {
         return () => {
             socket.off("prestamosUpdate");
         };
-    });
+    }, [rut]);
 
     return (
         <>

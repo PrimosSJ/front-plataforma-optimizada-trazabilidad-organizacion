@@ -1,15 +1,31 @@
+import { BrowserRouter, Route, Routes, Link } from 'react-router-dom'
+
+import './App.css'
+
 import Inventario from './components/Inventario'
 import Prestamos from './components/Prestamos'
-import PrestamoByRut from './components/prestamos/GetAllByRut'
+import NavBar from './components/NavBar'
 
 function App() {
 
 
   return (
     <>
-      <PrestamoByRut />
-      <Inventario />
-      <Prestamos />
+      <h1>
+        Plataforma Optimizada de Trazabilidad y Organización
+      </h1>
+      <hr />
+
+      <BrowserRouter>
+
+        <NavBar />
+
+        <Routes>
+          <Route path='/inventario' element={<Inventario />} />
+          <Route path='/' element={<Prestamos />} />
+        </Routes>
+
+      </BrowserRouter>
     </>
   )
 }
