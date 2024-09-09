@@ -6,6 +6,9 @@ export default function NavBar() {
                 <Link to='/inventario' className='text-dark-300 font-bold py-2 px-4 rounded hover:bg-dark-400'>
                     Inventario
                 </Link>
+                <Link to='/inventario/agregar' className='text-dark-300 font-bold py-2 px-4 rounded hover:bg-dark-400'>
+                    Agregar Item
+                </Link>
                 <Link to='/' className='text-dark-300 font-bold py-2 px-4 rounded hover:bg-dark-400'>
                     Prestamos
                 </Link>

@@ -60,7 +60,7 @@ export default function Prestamos() {
                                         <td>{prestamo.nombre_producto}</td>
                                         <td>{formatTimestamp(prestamo.timestamp)}</td>
                                         <td>
-                                            {prestamo.devuelto ? (
+                                            {prestamo.finalizado ? (
                                                 <span className="badge badge-success">Devuelto</span>
                                             ) : (
                                                 <MarcarDevuelto {...prestamo} />
