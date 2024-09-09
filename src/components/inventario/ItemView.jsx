@@ -94,10 +94,10 @@ export default function ItemView() {
                     className="input input-bordered w-full max-w-xs"
                 >
                     <option value="">Selecciona una categoría</option>
-                    <option value="">Oficina</option>
-                    <option value="">Redes</option>
-                    <option value="">LPA</option>
-                    <option value="">Feria</option>
+                    <option value="Oficina">Oficina</option>
+                    <option value="Redes">Redes</option>
+                    <option value="LPA">LPA</option>
+                    <option value="Feria">Feria</option>
                 </select>
             </div>
 
