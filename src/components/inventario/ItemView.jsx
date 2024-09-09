@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 import EliminarItem from './EliminarItem';
 import QRgenerator from './QRgenerator';
@@ -8,6 +9,8 @@ import QRgenerator from './QRgenerator';
 import url from '../../utils';
 
 export default function ItemView() {
+    const navigate = useNavigate();
+
     const { id } = useParams();
     const [item, setItem] = useState(null);
 
@@ -35,7 +38,7 @@ export default function ItemView() {
            .put(url + `/inventario/${id}`, item)
            .then((res) => {
                 console.log(res);
-                history.push('/inventario');
+                navigate('/inventario');
             })
            .catch((err) => {
                 console.log(err);
