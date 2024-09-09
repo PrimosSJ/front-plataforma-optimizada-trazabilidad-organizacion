@@ -1,12 +1,17 @@
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
-export default function EliminarItem(item) {
+import url from '../../utils';
+
+export default function EliminarItem({ id }) {
+    const navigate = useNavigate();
 
     const handleDeleteItem = () => {
         axios
-            .delete(`http://localhost:3000/inventario/${item._id}`)
+            .delete(url + `/inventario/${id}`)
             .then((res) => {
                 console.log(res);
+                navigate("/inventario");
             })
             .catch((err) => {
                 console.log(err);

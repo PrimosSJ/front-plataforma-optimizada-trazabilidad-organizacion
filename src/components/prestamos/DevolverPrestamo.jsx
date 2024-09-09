@@ -1,11 +1,13 @@
 import axios from "axios";
 
+import url from "../../utils";
+
 export default function MarcarDevuelto(prestamo) {
 
     const handleClick = (e) => {
         e.preventDefault();
         axios
-           .patch(`http://localhost:3000/prestamos/return/${prestamo._id}`)
+           .patch(url + `/prestamos/return/${prestamo._id}`)
            .then((res) => {
                 console.log(res);
             })
@@ -15,8 +17,14 @@ export default function MarcarDevuelto(prestamo) {
     };
 
     return (
-        <>
-            <button onClick={handleClick}>Marcar Devuelto</button>
-        </>
+            <>
+                <button 
+                    onClick={handleClick}
+                    disabled={prestamo.finalizado}    
+                    className={`btn btn-sm ${prestamo.finalizado ? 'btn-disabled' : 'btn-primary'}`}
+                >
+                    Marcar Devuelto
+                </button>
+            </>
     )
 }

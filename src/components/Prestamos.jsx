@@ -2,17 +2,22 @@ import { useEffect, useState } from "react";
 import io from "socket.io-client";
 import axios from "axios";
 
-import AgregarPrestamo from "./prestamos/AgregarPrestamo";
-import PrestamosPorRut from "./prestamos/GetAllByRut";
+import url from "../utils";
+import MarcarDevuelto from "./prestamos/DevolverPrestamo";
 
-const socket = io("http://localhost:3000");
+const socket = io(url);
+
+function formatTimestamp(timestamp) {
+    const date = new Date(timestamp);
+    return date.toLocaleString();
+}
 
 export default function Prestamos() {
     const [prestamos, setPrestamos] = useState([]);
 
     useEffect(() => {
         axios
-        .get("http://localhost:3000/prestamos")
+        .get(url + "/prestamos")
         .then((res) => {
             setPrestamos(res.data);
         })
@@ -21,7 +26,9 @@ export default function Prestamos() {
         });
 
         socket.on("prestamosUpdate", (data) => {
-            setPrestamos(data);
+            setPrestamos(prevPrestamos => {
+                return [data, ...prevPrestamos];
+            });
             console.log(data);
         });
 
@@ -32,33 +39,42 @@ export default function Prestamos() {
 
     return (
         <>
-            {prestamos && 
-                <div>
-                <h1>Prestamos</h1>
-                <table>
-                <thead>
-                    <tr>
-                    <th>Rut</th>
-                    <th>Producto</th>
-                    <th>Timestamp</th>
-                    <th>Estado</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {prestamos.map((prestamo) => (
-                        <tr key={prestamo._id}>
-                            <td>{prestamo.rut}</td>
-                            <td>{prestamo.nombre_producto}</td>
-                            <td>{prestamo.timestamp}</td>
-                            <td>{prestamo.finalizado ? "Finalizado": "Vigente"}</td>
-                        </tr>
-                    ))}
-                </tbody>
-                </table>
+            {prestamos && (
+                <div className="container mx-auto p-4">
+                    <h1 className="text-3xl font-bold mb-6 text-center">Préstamos</h1>
+                    <div className="overflow-x-auto">
+                        <table className="table table-zebra w-full">
+                            <thead>
+                                <tr>
+                                    <th className="text-left">Rut</th>
+                                    <th className="text-left">Producto</th>
+                                    <th className="text-left">Timestamp</th>
+                                    <th className="text-left">Estado</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {prestamos.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
+                                    .map((prestamo) => (
+                                    <tr key={prestamo._id}>
+                                        <td>{prestamo.rut}</td>
+                                        <td>{prestamo.nombre_producto}</td>
+                                        <td>{formatTimestamp(prestamo.timestamp)}</td>
+                                        <td>
+                                            <span 
+                                                className={`badge ${prestamo.finalizado ? 'badge-success' : 'badge-warning'}`}
+                                            >
+                                                {prestamo.finalizado ? 'Devuelto' : 'Prestado'}
+                                            </span>
+                                        </td>
+                                        <td> <MarcarDevuelto {...prestamo} /> </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
-            }
-            <AgregarPrestamo />
-            <PrestamosPorRut />
+            )}
         </>
+
     )
 }

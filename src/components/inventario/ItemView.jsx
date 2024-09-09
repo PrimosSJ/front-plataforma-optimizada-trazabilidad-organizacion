@@ -3,6 +3,9 @@ import { useParams } from 'react-router-dom';
 import axios from 'axios';
 
 import EliminarItem from './EliminarItem';
+import QRgenerator from './QRgenerator';
+
+import url from '../../utils';
 
 export default function ItemView() {
     const { id } = useParams();
@@ -10,7 +13,7 @@ export default function ItemView() {
 
     useEffect(() => {
         axios
-            .get(`http://localhost:3000/inventario/${id}`)
+            .get(url + `/inventario/${id}`)
             .then((res) => {
                 setItem(res.data);
             })
@@ -29,7 +32,7 @@ export default function ItemView() {
 
     const handleSave = () => {
         axios
-           .put(`http://localhost:3000/inventario/${id}`, item)
+           .put(url + `/inventario/${id}`, item)
            .then((res) => {
                 console.log(res);
                 history.push('/inventario');
@@ -47,14 +50,14 @@ export default function ItemView() {
         <div className="max-w-md mx-auto mt-10 p-5 border rounded shadow-md">
             <h2 className="text-2xl font-bold mb-5">Editar Item</h2>
             <div className="mb-4">
-                <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="nombre">Nombre</label>
+            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="nombre">Nombre</label>
                 <input
                     type="text"
                     placeholder="Nombre"
                     name="nombre"
                     value={item.nombre}
                     onChange={handleChange}
-                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                    className="input input-bordered w-full max-w-xs"
                 />
             </div>
             <div className="mb-4">
@@ -65,7 +68,7 @@ export default function ItemView() {
                     name="descripcion"
                     value={item.descripcion}
                     onChange={handleChange}
-                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                    className="input input-bordered w-full max-w-xs"
                 />
             </div>
             <div className="mb-4">
@@ -76,7 +79,7 @@ export default function ItemView() {
                     name="precio"
                     value={item.precio}
                     onChange={handleChange}
-                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                    className="input input-bordered w-full max-w-xs"
                 />
             </div>
             <div className="mb-4">
@@ -85,15 +88,16 @@ export default function ItemView() {
                     name="categoria"
                     value={item.categoria}
                     onChange={handleChange}
-                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                    className="input input-bordered w-full max-w-xs"
                 >
                     <option value="">Selecciona una categoría</option>
-                    <option value="bebida">Oficina</option>
-                    <option value="comida">Redes</option>
-                    <option value="postre">LPA</option>
-                    <option value="postre">Feria</option>
+                    <option value="">Oficina</option>
+                    <option value="">Redes</option>
+                    <option value="">LPA</option>
+                    <option value="">Feria</option>
                 </select>
             </div>
+
             <div className="mb-4">
                 <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="stock">Stock</label>
                 <input
@@ -102,13 +106,14 @@ export default function ItemView() {
                     name="stock"
                     value={item.stock}
                     onChange={handleChange}
-                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                    className="input input-bordered w-full max-w-xs"
                 />
             </div>
             <button onClick={handleSave} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
                 Guardar
             </button>
-            <EliminarItem item={item} />
+            <QRgenerator id={item._id} />
+            <EliminarItem id={item._id} />
         </div>
 
     )

@@ -1,0 +1,8 @@
+services: 
+  app: 
+    build: .
+    image: primos-poto
+    container_name: primos-poto
+    ports: 
+      - 8005:3000
+    restart: unless-stopped

@@ -2,9 +2,15 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import io from "socket.io-client";
 
-import MarcarDevueto from "./DevolverPrestamo";
+import url from "../../utils";
+import MarcarDevuelto from "./DevolverPrestamo";
 
-const socket = io("http://localhost:3000");
+function formatTimestamp(timestamp) {
+    const date = new Date(timestamp);
+    return date.toLocaleString();
+}
+
+const socket = io(url);
 
 export default function PrestamosPorRut() {
     const [lista, setLista] = useState([]);
@@ -17,7 +23,7 @@ export default function PrestamosPorRut() {
     const handleClick = (e) => {
         e.preventDefault();
         axios
-           .get(`http://localhost:3000/prestamos/history/${rut}`)
+           .get(url + `/prestamos/history/${rut}`)
            .then((res) => {
                 setLista(res.data);
             })
@@ -28,7 +34,7 @@ export default function PrestamosPorRut() {
 
     useEffect(() => {
         axios
-        .get(`http://localhost:3000/prestamos/history/${rut}`)
+        .get(url + `/prestamos/history/${rut}`)
         .then((res) => {
             setLista(res.data);
         })
@@ -48,32 +54,56 @@ export default function PrestamosPorRut() {
 
     return (
         <>
-            <h1>Historial de préstamos por rut</h1>
-            <input type="text" placeholder="Rut" onChange={handleChange} />
-            <button onClick={handleClick}>Buscar</button>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Rut</th>
-                        <th>Nombre</th>
-                        <th>Producto</th>
-                        <th>Fecha</th>
-                        <th>Monto</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {lista.map((prestamo) => (
-                        <tr key={prestamo._id}>
-                            <td>{prestamo.rut}</td>
-                            <td>{prestamo.nombre}</td>
-                            <td>{prestamo.nombre_producto}</td>
-                            <td>{prestamo.timestamp}</td>
-                            <td>{prestamo.monto}</td>
-                            <td>{prestamo.finalizado ? "Devuelto" : <MarcarDevueto {...prestamo}/>}</td>
-                        </tr>
-                    ))}
-                </tbody>
-            </table>
+            <div className="container mx-auto p-4">
+                <h1 className="text-3xl font-bold mb-6 text-center">Historial de Préstamos por Rut</h1>
+                <div className="flex items-center justify-center mb-4">
+                    <input 
+                        type="text" 
+                        placeholder="Rut" 
+                        onChange={handleChange} 
+                        className="input input-bordered w-full max-w-xs mr-4"
+                    />
+                    <button 
+                        onClick={handleClick} 
+                        className="btn btn-primary"
+                    >
+                        Buscar
+                    </button>
+                </div>
+                <div className="overflow-x-auto">
+                    <table className="table table-zebra w-full">
+                        <thead>
+                            <tr>
+                                <th className="text-left">Rut</th>
+                                <th className="text-left">Nombre</th>
+                                <th className="text-left">Producto</th>
+                                <th className="text-left">Fecha</th>
+                                <th className="text-left">Monto</th>
+                                <th className="text-left">Estado</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {lista.map((prestamo) => (
+                                <tr key={prestamo._id}>
+                                    <td>{prestamo.rut}</td>
+                                    <td>{prestamo.nombre}</td>
+                                    <td>{prestamo.nombre_producto}</td>
+                                    <td>{formatTimestamp(prestamo.timestamp)}</td>
+                                    <td>{prestamo.monto}</td>
+                                    <td>
+                                        {prestamo.finalizado ? (
+                                            <span className="badge badge-success">Devuelto</span>
+                                        ) : (
+                                            <MarcarDevuelto {...prestamo} />
+                                        )}
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </>
+
     )
 }

@@ -2,17 +2,17 @@ import { useEffect, useState } from "react";
 import io from "socket.io-client";
 import axios from "axios";
 
+import url from "../utils";
 import AgregarItem from "./inventario/AgregarItem";
-import ItemView from "./inventario/ItemView";
 
-const socket = io("http://localhost:3000");
+const socket = io(url);
 
 export default function Inventario() {
     const [inventory, setInventory] = useState([]);
     
     useEffect(() => {
         axios
-        .get("http://localhost:3000/inventario")
+        .get(url + "/inventario")
         .then((res) => {
             setInventory(res.data);
         })
@@ -32,46 +32,49 @@ export default function Inventario() {
     
     return (
         <>
+            {inventory && (
+                <div className="container mx-auto p-4">
+                    <h1 className="text-3xl font-bold mb-6 text-center">Inventario</h1>
+                    <div className="overflow-x-auto">
+                        <table className="table table-zebra w-full">
+                            <thead>
+                                <tr>
+                                    <th className="text-left">Nombre</th>
+                                    <th className="text-left">ID</th>
+                                    <th className="text-left">Descripción</th>
+                                    <th className="text-left">Precio</th>
+                                    <th className="text-left">Categoría</th>
+                                    <th className="text-left">Stock</th>
+                                    <th className="text-center">Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {inventory.map((item) => (
+                                    <tr key={item._id}>
+                                        <td>{item.nombre}</td>
+                                        <td>{item._id}</td>
+                                        <td>{item.descripcion}</td>
+                                        <td>{item.precio}</td>
+                                        <td>{item.categoria}</td>
+                                        <td>{item.stock}</td>
+                                        <td className="text-center">
+                                            <a 
+                                                href={`/inventario/${item._id}`} 
+                                                className="btn btn-primary btn-sm"
+                                            >
+                                                Editar
+                                            </a>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            )}
 
-        {inventory &&
-            <div>
-            <h1>Inventario</h1>
-            <table>
-            <thead>
-                <tr>
-                <th>Nombre</th>
-                <th>ID</th>
-                <th>Descripción</th>
-                <th>Precio</th>
-                <th>Categoría</th>
-                <th>Stock</th>
-                </tr>
-            </thead>
-            <tbody>
-                {inventory.map((item) => (
-                <tr key={item._id}>
-                    <td>{item.nombre}</td>
-                    <td>{item._id}</td>
-                    <td>{item.descripcion}</td>
-                    <td>{item.precio}</td>
-                    <td>{item.categoria}</td>
-                    <td>{item.stock}</td>
-                    <td>
-                        <button 
-                            href={`/inventario/${item._id}`}
-                            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-                        >
-                            Editar
-                        </button>
-                    </td>
-                </tr>
-                ))}
-            </tbody>
-            </table>
-            </div>
-        }
-
-        <AgregarItem />
+            <AgregarItem />
         </>
+
     )
 }
