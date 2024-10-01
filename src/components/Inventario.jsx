@@ -13,7 +13,7 @@ export default function Inventario() {
     const [nombreFiltro, setNombreFiltro] = useState("");
     const [categoriaFiltro, setCategoriaFiltro] = useState("");
 
-    const filteredInventory = inventory.filter((item) => {
+    const filteredInventory = (inventory || []).filter((item) => {
         const nombreMatch = item.nombre.toLowerCase().includes(nombreFiltro.toLowerCase());
         const categoriaMatch = categoriaFiltro === "" || item.categoria === categoriaFiltro;
         return nombreMatch && categoriaMatch;
