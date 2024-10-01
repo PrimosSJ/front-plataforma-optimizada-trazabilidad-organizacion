@@ -4,6 +4,7 @@ import io from "socket.io-client";
 
 import url from "../../utils";
 import MarcarDevuelto from "./DevolverPrestamo";
+import RutReader from "../RutReader";
 
 function formatTimestamp(timestamp) {
     const date = new Date(timestamp);
@@ -15,10 +16,6 @@ const socket = io(url);
 export default function PrestamosPorRut() {
     const [lista, setLista] = useState([]);
     const [rut, setRut] = useState("");
-
-    const handleChange = (e) => {
-        setRut(e.target.value);
-    };
 
     const handleClick = (e) => {
         e.preventDefault();
@@ -57,12 +54,7 @@ export default function PrestamosPorRut() {
             <div className="container mx-auto p-4">
                 <h1 className="text-3xl font-bold mb-6 text-center">Historial de Préstamos por Rut</h1>
                 <div className="flex items-center justify-center mb-4">
-                    <input 
-                        type="text" 
-                        placeholder="Rut" 
-                        onChange={handleChange} 
-                        className="input input-bordered w-full max-w-xs mr-4"
-                    />
+                    <RutReader onRutChange={setRut} />
                     <button 
                         onClick={handleClick} 
                         className="btn btn-primary"
